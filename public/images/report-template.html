@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report</title>
+    <link rel="stylesheet" href="/images/ReportDesign.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      .edit-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+      .edit-button:hover {
+        background-color: #0056b3;
+      }
+      .download-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+        font-size: 14px;
+      }
+      .download-button:hover {
+        background-color: #218838;
+      }
+      @media print {
+        .edit-button,
+        .download-button {
+          display: none;
+        }
+        body {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+      }
+      [contenteditable="true"] {
+        box-shadow: 0 0 0 1px #007bff;
+        border-radius: 2px;
+        min-height: 1em;
+        display: inline-block;
+      }
+      .table-cell[contenteditable="true"] {
+        display: table-cell;
+        box-shadow: inset 0 0 0 1px #007bff;
+      }
+      .company-details[contenteditable="true"] {
+        margin-top: 7px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        font-size: 11px;
+        line-height: 1.2;
+        max-width: 65%;
+      }
+      .test-info {
+        position: relative;
+      }
+      .test-title {
+        position: relative;
+      }
+      .test-title[contenteditable="true"] {
+        position: relative;
+        top: 0px;
+        margin-bottom: 10px;
+        display: block;
+      }
+      .reference-info {
+        position: relative;
+      }
+      .reference-info[contenteditable="true"] {
+        display: block;
+        position: relative;
+        line-height: 1.1;
+        padding: 2px 0;
+        height: 65px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-container">
+      <div class="report-page">
+        <div class="report-content">
+          <div class="logo-container">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9e41188d3ee2ce968faa29a6d720ef669d95e2a?placeholderIfAbsent=true"
+              class="logo-left"
+              alt="NABL Logo"
+            />
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/f545c8da38014188734e97de5b34a49b383c56d1?placeholderIfAbsent=true"
+              class="logo-center"
+              alt="ATL Logo"
+            />
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/8c2eb5345017ea6472e30482422aab83d71f1009?placeholderIfAbsent=true"
+              class="logo-right"
+              alt="ATL Single Logo"
+            />
+          </div>
+
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/bdf69748a10e3e2e29a00328b233efc2704691d0?placeholderIfAbsent=true"
+            class="divider-line"
+            alt="Divider"
+          />
+
+          <div class="header-section">
+            <div class="header-top">
+              <div class="report-title">TEST REPORT</div>
+              <div class="report-number">Report No. ATL/25/05/1</div>
+            </div>
+            <div class="order-details">
+              Order No.* ATL/25/05/1
+              <br />
+              ULR: TC874925000000001F
+            </div>
+            <div class="company-details">
+              Company Name: L&T Constructions
+              <br />
+              Company Address: Plot No. 42, Sector 5, Technopark Industrial
+              Area,Turbhe, Navi Mumbai
+            </div>
+
+            <div class="date-section">
+              <div class="date">Date: 31-05-2025</div>
+              <div class="receipt-date">
+                Date of Receipt: 31-05-2025
+                <br />
+                Date of Testing: 25-05-2025
+              </div>
+              <div class="client-details">
+                Client Name: Raj Patil
+                <br />
+                Project Name: Everest
+              </div>
+            </div>
+          </div>
+
+          <div class="product-section">
+            <div class="product-info">
+              Product Name: L&T Constructions
+              <br />
+              Test Standard: IS 1727
+              <br />
+              Condition: Satisfactory
+              <br />
+              Description: Fly Ash
+            </div>
+            <div class="test-info">
+              <div>
+                <div class="test-title">Chemical Analysis of Fly Ash</div>
+              </div>
+              <div class="reference-info">
+                <div class="lab-reference">
+                  Lab Reference No. ATL/25/05/1
+                  <br />
+                  Test Period: 25-05-2025 to 30-05-2025
+                  <br />
+                  <br />
+                </div>
+                <div class="customer-reference">
+                  Customer's Reference: L&T Construction
+                </div>
+              </div>
+            </div>
+            <div class="sample-note">
+              Sample has been provided by the customer.
+            </div>
+          </div>
+
+          <div class="table-section">
+            <div class="equipment-title">Equipments Details</div>
+            <div class="table equipment-table">
+            </div>
+
+            <div class="results-title">Test Results</div>
+            <div class="table results-table">
+            </div>
+          </div>
+
+          <div class="signatures-section">
+            <div class="signatures-left">
+              <div class="signature-block">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true" class="signature-image" alt="Signature" />
+                <div class="signature-details">
+                  Nisha Kamble
+                  <br />
+                  Quality Manager
+                  <br />
+                  Authorised Signatory-Chemical
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="signatures-section-2">
+            <div class="signatures-left">
+              <div class="signature-block">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true" class="signature-image" alt="Signature" />
+                <div class="signature-details">
+                  Nisha Kamble
+                  <br />
+                  Quality Manager
+                  <br />
+                  Authorised Signatory-Chemical
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <div class="footer-text">
+              <div class="footer-line">
+                This report is subject to terms and conditions overleaf.
+              </div>
+              <div class="footer-line">
+                This report relates to the sample tested only and shall not be
+                reproduced except in full without written approval of the
+                laboratory.
+              </div>
+              <div class="footer-line">
+                This test report shall not be used for any publicity/legal purpose.
+              </div>
+            </div>
+            <div class="footer-page">Page 1 of 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html> 

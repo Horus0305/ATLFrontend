@@ -1,0 +1,340 @@
+.report-container {
+  width: 794px;
+  height: 1123px;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.report-page {
+  width: 774px;
+  height: 1101px;
+  display: flex;
+  flex-direction: column;
+}
+
+.company-logo {
+  aspect-ratio: 1.06;
+  object-fit: contain;
+  object-position: center;
+  width: 69px;
+  align-self: flex-end;
+}
+
+.report-content {
+  width: 774px;
+  height: 1101px;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid rgba(0, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  position: relative;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 559px;
+  height: 57px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.logo-left {
+  margin-top: 5px;
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-center {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-right {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.divider-line {
+  object-fit: contain;
+  object-position: center;
+  width: 559px;
+  margin-top: 3px;
+  margin-left: 8px;
+}
+
+.header-section {
+  background-color: #f4efef;
+  display: flex;
+  align-items: stretch;
+  margin: 5px 10px 5px 10px;
+  padding: 12px 10px;
+  flex-direction: column;
+  overflow: visible;
+  border-radius: 5px;
+  height: auto;
+  position: relative;
+}
+
+.header-top {
+  display: flex;
+  padding-top: -15px;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+.report-number {
+  font-size: 11px;
+  font-weight: normal;
+  line-height: 1.2;
+  flex: 1;
+  max-width: 30%;
+  position: block;
+}
+
+.report-title {
+  text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  text-align: center;
+  font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  margin-top: -1px;
+}
+
+.date {
+  font-size: 11px;
+  text-align: right;
+  flex: 1;
+}
+
+.order-details {
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: 3px;
+  max-width: 65%;
+}
+
+.company-details {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-top: 2px;
+  max-width: 65%;
+}
+
+.date-section {
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  text-align: right;
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: -1px;
+}
+
+.receipt-date {
+  margin-top: 2px;
+}
+
+.client-details {
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.product-section {
+  border-radius: 5px;
+  background-color: rgba(244, 239, 239, 1);
+  display: flex;
+  align-items: stretch;
+  color: rgba(0, 0, 0, 1);
+  flex-wrap: wrap;
+  margin: 5px 10px 5px 10px;
+  padding: 12px 10px;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+
+.product-info {
+  font-size: 10px;
+  font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+  font-weight: 400;
+  line-height: 12px;
+  margin: 12px 0;
+}
+
+.test-info {
+  display: flex;
+  flex: 1;
+}
+
+.test-title {
+  text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
+  font-size: 11px;
+  font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.reference-info {
+  display: block;
+  position: relative;
+  line-height: 1.1;
+  padding: 2px 0;
+  height: 65px;
+}
+
+.lab-reference {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.customer-reference {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.table-section {
+  margin: 10px;
+  padding: 10px;
+  background-color: #f4efef;
+  border-radius: 5px;
+}
+
+.equipment-title,
+.results-title {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table-row {
+  border: 1px solid #000;
+}
+
+.table-cell {
+  border: 1px solid #000;
+  padding: 5px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.header-cell {
+  background-color: rgba(31, 31, 31, 0.08);
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.signatures-section,
+.signatures-section-2 {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 10px;
+  padding: 10px;
+}
+
+.signatures-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.signature-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.signature-image {
+  width: 100px;
+  height: auto;
+  margin-bottom: 5px;
+}
+
+.signature-details {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.footer-section {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 9px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.footer-line {
+  margin-bottom: 2px;
+}
+
+.footer-page {
+  font-size: 9px;
+  text-align: right;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .report-container {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .report-page,
+  .report-content {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .table {
+    page-break-inside: avoid;
+  }
+} 

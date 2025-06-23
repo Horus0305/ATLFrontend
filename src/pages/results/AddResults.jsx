@@ -626,8 +626,11 @@ export default function AddResults() {
   // Function to generate the full report HTML
   const generateReportHtml = async (test, equipmentTableHtml, resultsTableHtml) => {
     try {
-      // Load the report template
-      const response = await fetch("/src/pages/results/ReportGenerate/report.html");
+      // Use the correct path relative to the public directory
+      const response = await fetch("/images/report-template.html");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch report template: ${response.statusText}`);
+      }
       const html = await response.text();
       
       // Extract only the body content
