@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Report</title>
-    <link rel="stylesheet" href="/images/ReportDesign.css" />
+    <link rel="stylesheet" href="ReportDesign.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -92,6 +92,10 @@
     </style>
   </head>
   <body>
+    <!-- <button class="edit-button" onclick="toggleEdit()">Enable Editing</button>
+    <button class="download-button" onclick="window.print()">
+      Download PDF
+    </button> -->
     <div class="report-container">
       <div class="report-page">
         <div class="report-content">
@@ -186,6 +190,7 @@
           <div class="table-section">
             <div class="equipment-title">Equipments Details</div>
             <div class="table equipment-table">
+
             </div>
 
             <div class="results-title">Test Results</div>
@@ -193,10 +198,31 @@
             </div>
           </div>
 
+          <div class="notes-section">
+            <span class="note-title">Note:</span>
+            <br />
+            1. The above results relate to the sample submitted by the customer.
+            <br />
+            2. Test results shall not be reproduced except in full without the
+            written permission of Avant-Tech lab & Research CenterㅤPvt. Ltd.
+            <br />
+            3. We do not undertake any responsibility for any involvement in any
+            type of litigation arising out of this report submitted ㅤby Avant –
+            Tech lab & Research Centre Pvt. Ltd.
+            <br />
+            4. Uniformity requirements for ash content is not applicable to
+            accelerating admixture which may contain more than 1 ㅤㅤpercent
+            chloride content.
+          </div>
+
           <div class="signatures-section">
             <div class="signatures-left">
               <div class="signature-block">
-                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true" class="signature-image" alt="Signature" />
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true"
+                  class="signature-image"
+                  alt="Signature"
+                />
                 <div class="signature-details">
                   Nisha Kamble
                   <br />
@@ -205,42 +231,176 @@
                   Authorised Signatory-Chemical
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="signatures-section-2">
-            <div class="signatures-left">
               <div class="signature-block">
-                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true" class="signature-image" alt="Signature" />
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/2b4d0b2cb6e0fd03bd0dc9b58a472c47df441e50?placeholderIfAbsent=true"
+                  class="signature-image-2"
+                  alt="Signature"
+                />
                 <div class="signature-details">
-                  Nisha Kamble
+                  Sadananndbnsd Govilkar
                   <br />
-                  Quality Manager
+                  Managing Director
                   <br />
-                  Authorised Signatory-Chemical
+                  Avant Tech Lab
                 </div>
               </div>
             </div>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/473d5756470e678abab9f399a3e589a470d71899?placeholderIfAbsent=true"
+              class="certification-image"
+              alt="Certification"
+            />
+            <div class="nabl-section">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/75a0667b23b9521aeda71407fe4dfac0ed5a9e84?placeholderIfAbsent=true"
+                class="nabl-logo"
+                alt="NABL Logo"
+              />
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/75a0667b23b9521aeda71407fe4dfac0ed5a9e84?placeholderIfAbsent=true"
+                class="nabl-logo"
+                alt="NABL Logo"
+              />
+            </div>
           </div>
 
-          <div class="footer-section">
-            <div class="footer-text">
-              <div class="footer-line">
-                This report is subject to terms and conditions overleaf.
-              </div>
-              <div class="footer-line">
-                This report relates to the sample tested only and shall not be
-                reproduced except in full without written approval of the
-                laboratory.
-              </div>
-              <div class="footer-line">
-                This test report shall not be used for any publicity/legal purpose.
-              </div>
-            </div>
-            <div class="footer-page">Page 1 of 1</div>
-          </div>
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/6b5be37e375000fb544a7cd78b2493da72b161e0?placeholderIfAbsent=true"
+            class="footer-logo"
+            alt="Footer Logo"
+          />
         </div>
       </div>
     </div>
+    <div class="report-container">
+    <div class="report-page">
+      <div class="report-content">
+        <div class="logo-container">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9e41188d3ee2ce968faa29a6d720ef669d95e2a?placeholderIfAbsent=true"
+            class="logo-left"
+            alt="NABL Logo"
+          />
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/f545c8da38014188734e97de5b34a49b383c56d1?placeholderIfAbsent=true"
+            class="logo-center"
+            alt="ATL Logo"
+          />
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/8c2eb5345017ea6472e30482422aab83d71f1009?placeholderIfAbsent=true"
+            class="logo-right"
+            alt="ATL Single Logo"
+          />
+        </div>
+
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/bdf69748a10e3e2e29a00328b233efc2704691d0?placeholderIfAbsent=true"
+          class="divider-line"
+          alt="Divider"
+        />
+        <div class="notes-section-2">
+          <span class="note-title">Note:</span>
+          <br />
+          1. The above results relate to the sample submitted by the customer.
+          <br />
+          2. Test results shall not be reproduced except in full without the
+          written permission of Avant-Tech lab & Research CenterㅤPvt. Ltd.
+          <br />
+          3. We do not undertake any responsibility for any involvement in any
+          type of litigation arising out of this report submitted ㅤby Avant –
+          Tech lab & Research Centre Pvt. Ltd.
+          <br />
+          4. Uniformity requirements for ash content is not applicable to
+          accelerating admixture which may contain more than 1 ㅤㅤpercent
+          chloride content.
+        </div>
+
+        <div class="signatures-section-2">
+          <div class="signatures-left">
+            <div class="signature-block">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true"
+                class="signature-image"
+                alt="Signature"
+              />
+              <div class="signature-details">
+                Nisha Kamble
+                <br />
+                Quality Manager
+                <br />
+                Authorised Signatory-Chemical
+              </div>
+            </div>
+            <div class="signature-block">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/2b4d0b2cb6e0fd03bd0dc9b58a472c47df441e50?placeholderIfAbsent=true"
+                class="signature-image-2"
+                alt="Signature"
+              />
+              <div class="signature-details">
+                Sadanand Govilkar
+                <br />
+                Managing Director
+                <br />
+                Avant Tech Lab
+              </div>
+            </div>
+          </div>
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/473d5756470e678abab9f399a3e589a470d71899?placeholderIfAbsent=true"
+            class="certification-image"
+            alt="Certification"
+          />
+          <div class="nabl-section">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/75a0667b23b9521aeda71407fe4dfac0ed5a9e84?placeholderIfAbsent=true"
+              class="nabl-logo"
+              alt="NABL Logo"
+            />
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/75a0667b23b9521aeda71407fe4dfac0ed5a9e84?placeholderIfAbsent=true"
+              class="nabl-logo"
+              alt="NABL Logo"
+            />
+          </div>
+        </div>
+
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/6b5be37e375000fb544a7cd78b2493da72b161e0?placeholderIfAbsent=true"
+          class="footer-logo"
+          alt="Footer Logo"
+        />
+      </div>
+    </div>
   </body>
-</html> 
+  <script>
+    let isEditing = false;
+    const editableElements = [
+      ".report-number",
+      ".report-title",
+      ".order-details",
+      ".company-details",
+      ".date-section",
+      ".product-info",
+      ".test-title",
+      ".lab-reference",
+      ".customer-reference",
+      ".sample-note",
+      ".notes-section",
+    ];
+
+    function toggleEdit() {
+      isEditing = !isEditing;
+      const button = document.querySelector(".edit-button");
+      button.textContent = isEditing ? "Disable Editing" : "Enable Editing";
+
+      editableElements.forEach((selector) => {
+        document.querySelectorAll(selector).forEach((element) => {
+          element.contentEditable = isEditing;
+        });
+      });
+    }
+  </script>
+  <script src="ReportDesign.js"></script>
+</html>
