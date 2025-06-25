@@ -616,282 +616,38 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
       // Extract CSS from all stylesheets
       styleSheets.forEach(sheet => {
         try {
-          // Include all stylesheets, both external and internal
-          Array.from(sheet.cssRules).forEach(rule => {
-            cssText += rule.cssText + '\n';
-          });
-        } catch (e) {
-          // If we can't access the rules directly (CORS), try to fetch the stylesheet
-          if (sheet.href) {
-            fetch(sheet.href)
-              .then(response => response.text())
-              .then(css => {
-                cssText += css + '\n';
-              })
-              .catch(error => {
-                console.warn('Could not fetch stylesheet:', error);
-              });
+          if (sheet.href && sheet.href.startsWith(window.location.origin)) {
+            Array.from(sheet.cssRules).forEach(rule => {
+              cssText += rule.cssText + '\n';
+            });
+          } else if (!sheet.href) {
+            Array.from(sheet.cssRules).forEach(rule => {
+              cssText += rule.cssText + '\n';
+            });
           }
+        } catch (e) {
+          console.warn('Could not access stylesheet rules:', e);
         }
       });
 
-      // Add all the component's styles
+      // Add additional styles to disable editing and handle NABL image visibility
       cssText += `
-        .report-container {
-          width: 794px;
-          height: 1123px;
-          margin: 0 auto;
-          background: white;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          page-break-after: always;
-        }
-
-        .report-page {
-          width: 774px;
-          height: 1101px;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .report-content {
-          width: 774px;
-          height: 1101px;
-          background-color: rgba(255, 255, 255, 0);
-          border: 1px solid rgba(0, 0, 0, 1);
-          display: flex;
-          flex-direction: column;
-          overflow: visible;
-          position: relative;
-        }
-
-        .logo-container {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 559px;
-          height: 57px;
-          padding: 0;
-          margin: 0 auto;
-          position: relative;
-        }
-
-        .logo-left {
-          margin-top: 5px;
-          height: 50px;
-          width: auto;
-          object-fit: contain;
-          transition: opacity 0.2s ease-in-out;
-          position: absolute;
-          left: 0;
-          opacity: ${showNablImage ? '1' : '0'};
-          visibility: ${showNablImage ? 'visible' : 'hidden'};
-        }
-
-        .logo-center {
-          height: 45px;
-          width: auto;
-          object-fit: contain;
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-        }
-
-        .logo-right {
-          height: 50px;
-          width: auto;
-          object-fit: contain;
-          position: absolute;
-          right: 0;
-        }
-
-        .header-section {
-          background-color: #f4efef !important;
-          display: flex;
-          align-items: stretch;
-          margin: 5px 10px 5px 10px;
-          padding: 12px 10px;
-          flex-direction: column;
-          overflow: visible;
-          border-radius: 5px;
-          height: auto;
-          position: relative;
-        }
-
-        .product-section {
-          border-radius: 5px;
-          background-color: #f4efef !important;
-          display: flex;
-          align-items: stretch;
-          color: rgba(0, 0, 0, 1);
-          flex-wrap: wrap;
-          margin: 5px 10px 5px 10px;
-          padding: 12px 10px;
-          height: auto;
-          position: relative;
-          overflow: visible;
-        }
-
-        .table-section {
-          border-radius: 5px;
-          background-color: #f4efef !important;
-          height: auto;
-          width: auto;
-          display: flex;
-          min-height: 245px;
-          margin: 5px 10px 5px 10px;
-          padding: 12px 10px;
-          flex-direction: column;
-          overflow: visible;
-          align-items: stretch;
-        }
-
-        .table {
-          width: 100%;
-          border: none;
-          border-collapse: collapse;
-          text-align: center;
-          align-items: center;
-        }
-
-        .table-row {
-          border-bottom: 0.2px solid rgb(4, 4, 4);
-        }
-
-        .table-cell {
-          border-right: 0.2px solid rgb(4, 4, 4);
-          padding: 1px 4px;
-          font-size: 9px;
-          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
-          min-height: 15px;
-          height: auto;
-          display: flex;
-          align-items: center;
-          white-space: normal;
-          overflow: visible;
-          line-height: 1.2;
-        }
-
-        .header-cell {
-          background-color: rgba(31, 31, 31, 0.08) !important;
-          font-weight: 500;
-          text-align: center;
-          font-size: 10px;
-          min-height: 10px;
-        }
-
-        .notes-section, .notes-section-2 {
-          border-radius: 5px;
-          background-color: #f4efef !important;
-          margin: 5px 10px 5px 10px;
-          padding: 8px 10px;
-          overflow: visible;
-          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
-          font-size: 10px;
-          color: rgba(0, 0, 0, 1);
-          font-weight: 400;
-          line-height: 12px;
-          position: relative;
-          height: auto;
-        }
-
-        .signatures-section, .signatures-section-2 {
-          border-radius: 5px;
-          background-color: #f4efef !important;
-          margin: 5px 10px 0px 10px;
-          padding: 5px 10px 15px;
-          align-items: flex-start;
-          gap: 20px;
-          overflow: visible;
-          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
-          font-size: 10px;
-          color: rgba(0, 0, 0, 1);
-          font-weight: 400;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          min-height: 70px;
-          height: auto;
-        }
-
-        @media print {
-          * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-
-          @page {
-            size: A4;
-            margin: 0;
-            bleed: 0;
-            width: 794px;
-            height: 1123px;
-          }
-
-          body {
-            margin: 0;
-            padding: 0;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-
-          .report-container {
-            width: 794px;
-            height: 1123px;
-            margin: 0;
-            padding: 0;
-            box-shadow: none;
-            background-color: white !important;
-            overflow: hidden;
-          }
-
-          .report-page,
-          .report-content {
-            width: 774px;
-            height: 1101px;
-            margin: auto;
-            background-color: white !important;
-          }
-
-          .header-section,
-          .product-section,
-          .table-section,
-          .notes-section,
-          .signatures-section {
-            background-color: #f4efef !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            break-inside: avoid;
-            
-          }
-
-          img {
-            display: block !important;
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
-
-          table {
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
-        }
-
         [contenteditable="true"] {
           box-shadow: none !important;
           border-radius: 0 !important;
           cursor: default !important;
           pointer-events: none !important;
         }
-
         .edit-button, .download-button, .nabl-checkbox-container {
           display: none !important;
         }
-
         .table-cell[contenteditable="true"] {
           box-shadow: none !important;
           pointer-events: none !important;
+        }
+        .logo-left {
+          opacity: ${showNablImage ? '1' : '0'} !important;
+          visibility: ${showNablImage ? 'visible' : 'hidden'} !important;
         }
       `;
 
@@ -907,7 +663,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
               ${cssText}
             </style>
           </head>
-          <body style="margin: 0; padding: 0; background-color: white;">
+          <body>
             ${Array.from(reportContainers).map(container => {
               // Clone the container to avoid modifying the original
               const clone = container.cloneNode(true);
@@ -939,7 +695,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         </html>
       `;
 
-      // Save the report by calling the onSave prop with the complete HTML
+      // Save the report
       await onSave(completeHtml);
 
       // Update the local state with the saved content
@@ -999,7 +755,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         console.warn('Could not access stylesheet rules:', e);
       }
     });
-
+    console.log(cssText);
     cssText += `
       @page { size: A4; margin: 0; }
       body { margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }

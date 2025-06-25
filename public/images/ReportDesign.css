@@ -1,6 +1,6 @@
 .report-container {
-  width: 794px;
-  height: 1123px;
+  width: 595px;
+  height: 842px;
   margin: 0 auto;
   background: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -10,8 +10,8 @@
 }
 
 .report-page {
-  width: 774px;
-  height: 1101px;
+  width: 575px;
+  height: 820px;
   display: flex;
   flex-direction: column;
   /* overflow: hidden; */
@@ -26,8 +26,8 @@
 }
 
 .report-content {
-  width: 774px;
-  height: 1101px;
+  width: 575px;
+  height: 820px;
   background-color: rgba(255, 255, 255, 0);
   /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);  */
   border: 1px solid rgba(0, 0, 0, 1);
@@ -429,8 +429,6 @@
   justify-content: space-between;
   min-height: 70px;
   height: auto;
-  
-  
 }
 
 .signatures-section-2 {
@@ -623,8 +621,8 @@
     size: A4;
     margin: 0;
     bleed: 0;
-    width: 794px;
-    height: 1123px;
+    width: 595px;
+    height: 842px;
   }
 
   body {
@@ -638,8 +636,8 @@
   }
 
   .report-container {
-    width: 794px;
-    height: 1123px;
+    width: 595px;
+    height: 842px;
     margin: 0;
     padding: 0;
     box-shadow: none;
@@ -649,8 +647,8 @@
 
   .report-page,
   .report-content {
-    width: 774px;
-    height: 1101px;
+    width: 575px;
+    height: 820px;
     margin: auto;
     background-color: white !important;
   }

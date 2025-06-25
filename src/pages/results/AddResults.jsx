@@ -626,12 +626,23 @@ export default function AddResults() {
   // Function to generate the full report HTML
   const generateReportHtml = async (test, equipmentTableHtml, resultsTableHtml) => {
     try {
-      // Use the correct path relative to the public directory
-      const response = await fetch("/images/report-template.html");
-      if (!response.ok) {
-        throw new Error(`Failed to fetch report template: ${response.statusText}`);
+      // Fetch both template and CSS
+      const [templateResponse, cssResponse] = await Promise.all([
+        fetch("/images/report-template.html"),
+        fetch("/images/ReportDesign.css")
+      ]);
+
+      if (!templateResponse.ok) {
+        throw new Error(`Failed to fetch report template: ${templateResponse.statusText}`);
       }
-      const html = await response.text();
+      if (!cssResponse.ok) {
+        throw new Error(`Failed to fetch CSS: ${cssResponse.statusText}`);
+      }
+
+      const [html, css] = await Promise.all([
+        templateResponse.text(),
+        cssResponse.text()
+      ]);
       
       // Extract only the body content
       const bodyContent = html.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || "";
@@ -816,6 +827,826 @@ export default function AddResults() {
       // Apply signature changes to both signature sections
       dynamicHtml = replaceSignatureDetails(dynamicHtml);
 
+      // Add wrapper and additional styles for proper page layout
+      const additionalStyles = `
+        .report-container {
+          width: 595px;
+          height: 842px;
+          margin: 0 auto;
+          background: white;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .report-page {
+          width: 575px;
+          height: 820px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .company-logo {
+          aspect-ratio: 1.06;
+          object-fit: contain;
+          object-position: center;
+          width: 69px;
+          align-self: flex-end;
+        }
+
+        .report-content {
+          width: 575px;
+          height: 820px;
+          background-color: rgba(255, 255, 255, 0);
+          border: 1px solid rgba(0, 0, 0, 1);
+          display: flex;
+          flex-direction: column;
+          overflow: visible;
+          position: relative;
+        }
+
+        .logo-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 559px;
+          height: 57px;
+          padding: 0;
+          margin: 0 auto;
+          position: relative;
+        }
+
+        .logo-left {
+          margin-top: 5px;
+          height: 50px;
+          width: auto;
+          object-fit: contain;
+          transition: opacity 0.2s ease-in-out;
+          position: absolute;
+          left: 0;
+        }
+
+        .logo-center {
+          height: 45px;
+          width: auto;
+          object-fit: contain;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .logo-right {
+          height: 50px;
+          width: auto;
+          object-fit: contain;
+          position: absolute;
+          right: 0;
+        }
+
+        .divider-line {
+          object-fit: contain;
+          object-position: center;
+          width: 559px;
+          margin-top: 3px;
+          margin-left: 8px;
+        }
+
+        .header-section {
+          background-color: #f4efef;
+          display: flex;
+          align-items: stretch;
+          margin: 5px 10px 5px 10px;
+          padding: 12px 10px;
+          flex-direction: column;
+          overflow: visible;
+          border-radius: 5px;
+          height: auto;
+          position: relative;
+        }
+
+        .header-top {
+          display: flex;
+          padding-top: -15px;
+          width: 100%;
+          margin-bottom: 0px;
+        }
+
+        .report-number {
+          font-size: 11px;
+          font-weight: normal;
+          line-height: 1.2;
+          flex: 1;
+          max-width: 30%;
+          position: block;
+        }
+
+        .report-title {
+          text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
+          font-size: 12px;
+          text-align: center;
+          font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 800;
+          line-height: 1;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          width: auto;
+          margin-top: -1px;
+        }
+
+        .date {
+          font-size: 11px;
+          text-align: right;
+          flex: 1;
+        }
+
+        .order-details {
+          font-size: 11px;
+          line-height: 1.4;
+          margin-top: 3px;
+          max-width: 65%;
+        }
+
+        .company-details {
+          font-size: 11px;
+          line-height: 1.2;
+          margin-top: 2px;
+          max-width: 65%;
+        }
+
+        .date-section {
+          position: absolute;
+          top: 12px;
+          right: 10px;
+          text-align: right;
+          font-size: 11px;
+          line-height: 1.4;
+          margin-top: -1px;
+        }
+
+        .receipt-date {
+          margin-top: 2px;
+        }
+
+        .client-details {
+          margin-top: 2px;
+          line-height: 1.2;
+        }
+
+        .product-section,
+        .product-section[contenteditable="true"] {
+          border-radius: 5px;
+          background-color: rgba(244, 239, 239, 1);
+          display: flex;
+          align-items: stretch;
+          color: rgba(0, 0, 0, 1);
+          flex-wrap: wrap;
+          margin: 5px 10px 5px 10px;
+          padding: 12px 10px;
+          height: auto;
+          position: relative;
+          overflow: visible;
+        }
+
+        .product-info {
+          font-size: 10px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 400;
+          line-height: 12px;
+          margin: 12px 0;
+          white-space: normal;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          width: 37%;
+        }
+
+        .product-info br {
+          display: block;
+          margin: 2px 0;
+        }
+
+        .test-info {
+          display: flex;
+          padding-bottom: -20px;
+          flex: 1;
+        }
+
+        .test-title {
+          text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
+          font-size: 11px;
+          font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 700;
+          line-height: 1;
+          text-align: center;
+          margin-left: -30px;
+          margin-top: -2px;
+          transform: translateX(-10%);
+          position: relative;
+          width: 100%;
+          display: block;
+          width: calc(100% + 200px);
+          max-width: 300px;
+        }
+
+        .sample-note {
+          font-size: 10px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 400;
+          line-height: 1.4;
+          margin-top: -10px;
+          height: 12px;
+          transform: translateX(90%);
+        }
+
+        .sample-note[contenteditable="true"] {
+          margin-top: -10px;
+          height: 12px;
+          transform: translateX(90%);
+        }
+
+        .reference-info,
+        .reference-info[contenteditable="true"] {
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-size: 10px;
+          font-weight: 400;
+          text-align: right;
+          margin-top: 12px;
+          margin-left: 50px;
+          padding-bottom: 0px;
+        }
+
+        .lab-reference {
+          line-height: 12px;
+          padding-top: 1px;
+          text-align: right;
+          white-space: nowrap;
+          margin-top: 0px;
+          height: 25px;
+          width: 185px;
+        }
+
+        .lab-reference[contenteditable="true"] {
+          margin-bottom: -25px;
+        }
+
+        .customer-reference {
+          line-height: 1.2;
+          margin-top: 5px;
+        }
+
+        .customer-reference[contenteditable="true"] {
+          line-height: 1.2;
+          margin-top: -55px;
+        }
+
+        .table-section {
+          border-radius: 5px;
+          background-color: rgba(244, 239, 239, 1);
+          height: auto;
+          width:auto;
+          display: flex;
+          min-height: 245px;
+          margin: 5px 10px 5px 10px;
+          padding: 12px 10px;
+          flex-direction: column;
+          overflow: visible;
+          align-items: stretch;
+        }
+
+        .equipment-title,
+        .results-title {
+          color: rgba(0, 0, 0, 1);
+          text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
+          font-size: 11px;
+          font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 700;
+          line-height: 1;
+          text-align: center;
+          width: 100%;
+          margin-top: -5px;
+          margin-bottom: 5px;
+        }
+
+        .results-title {
+          margin-top: 7px;
+        }
+
+        .notes-section,
+        .notes-section[contenteditable="true"] {
+          display: block;
+          border-radius: 5px;
+          background-color: rgba(244, 239, 239, 1);
+          margin: 5px 10px 5px 10px;
+          padding: 8px 10px;
+          overflow: visible;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-size: 10px;
+          color: rgba(0, 0, 0, 1);
+          font-weight: 400;
+          line-height: 12px;
+          position: relative;
+          overflow: visible;
+          height: auto;
+        }
+
+        .notes-section-2,
+        .notes-section-2[contenteditable="true"] {
+          display: none;
+          border-radius: 5px;
+          background-color: rgba(244, 239, 239, 1);
+          margin: 5px 10px 5px 10px;
+          padding: 8px 10px;
+          overflow: visible;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-size: 10px;
+          color: rgba(0, 0, 0, 1);
+          font-weight: 400;
+          line-height: 12px;
+          position: relative;
+          overflow: visible;
+          height: auto;
+        }
+
+        .notes-section[contenteditable="true"] {
+          min-height: auto;
+        }
+
+        .notes-section-2[contenteditable="true"] {
+          min-height: auto;
+        }
+
+        .note-title {
+          font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 700;
+        }
+
+        .signatures-section {
+          display: flex;
+          border-radius: 5px;
+          background-color: rgba(244, 239, 239, 1);
+          display: flex;
+          margin: 5px 10px 0px 10px;
+          padding: 5px 10px 15px;
+          align-items: flex-start;
+          gap: 20px;
+          overflow: visible;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-size: 10px;
+          color: rgba(0, 0, 0, 1);
+          font-weight: 400;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          min-height: 70px;
+          height: auto;
+        }
+
+        .signatures-section-2 {
+          display: none;
+          border-radius: 5px;
+          background-color: rgba(244, 239, 239, 1);
+          margin: 5px 10px 0px 10px;
+          padding: 5px 10px 15px;
+          align-items: flex-start;
+          gap: 20px;
+          overflow: visible;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-size: 10px;
+          color: rgba(0, 0, 0, 1);
+          font-weight: 400;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          min-height: 70px;
+          height: auto;
+        }
+
+        .signatures-left {
+          align-self: stretch;
+          display: flex;
+          align-items: stretch;
+          gap: 13px;
+          line-height: 12px;
+        }
+
+        .signature-image {
+          aspect-ratio: 1.58;
+          object-fit: contain;
+          object-position: center;
+          width: 84px;
+          margin-top: -7px;
+        }
+
+        .signature-image-2 {
+          aspect-ratio: 2.2;
+          object-fit: contain;
+          object-position: center;
+          width: 88px;
+          margin-bottom: 7px;
+        }
+
+        .signature-details {
+          margin-top: -5px;
+        }
+
+        .certification-image {
+          aspect-ratio: 1.11;
+          object-fit: contain;
+          object-position: center;
+          padding-top: 1px;
+          width: 90px;
+          flex-shrink: 0;
+          margin-left: 5px;
+        }
+
+        .nabl-section {
+          display: flex;
+          align-items: stretch;
+          white-space: nowrap;
+          text-align: center;
+          line-height: 1.2;
+        }
+
+        .nabl-logo {
+          aspect-ratio: 0.93;
+          object-fit: contain;
+          object-position: center;
+          width: 79px;
+          flex-shrink: 0;
+          transition: display 0.2s ease-in-out;
+        }
+
+        .nabl-stamp {
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          z-index: 10;
+          align-self: flex-start;
+          aspect-ratio: 1;
+          padding: 73px 27px 0;
+        }
+
+        .stamp-background {
+          position: absolute;
+          inset: 0;
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
+
+        .footer-logo {
+          aspect-ratio: 4.95;
+          object-fit: contain;
+          object-position: center;
+          width: 183px;
+          height: 30px;
+          align-self: center;
+          margin-top: auto;
+          max-width: 100%;
+          margin-bottom: 5px;
+        }
+
+        .download-btn {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: 500;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+          transition: background-color 0.2s;
+        }
+
+        .download-btn:hover {
+          background-color: #0056b3;
+        }
+
+        .download-btn:active {
+          transform: translateY(1px);
+        }
+
+        @media (max-width: 595px) {
+          .report-container,
+          .report-page,
+          .report-content,
+          .logo-container,
+          .divider-line,
+          .header-section,
+          .table-section,
+          .equipment-table,
+          .results-table,
+          .table,
+          .table-row {
+            max-width: 100%;
+          }
+
+          .company-logo {
+            margin-right: 4px;
+          }
+
+          .header-section {
+            margin-right: 2px;
+          }
+
+          .company-details {
+            margin-right: 10px;
+          }
+
+          .test-title {
+            margin-right: 8px;
+            margin-left: 10px;
+          }
+
+          .sample-note {
+            margin-top: 40px;
+          }
+
+          .lab-reference {
+            margin-left: 10px;
+          }
+
+          .notes-section {
+            margin-right: 4px;
+          }
+
+          .nabl-stamp {
+            padding-left: 20px;
+            padding-right: 20px;
+            white-space: initial;
+          }
+        }
+
+        @media print {
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          @page {
+            size: A4;
+            margin: 0;
+            bleed: 0;
+            width: 595px;
+            height: 842px;
+          }
+
+          body {
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .edit-button {
+            display: none;
+          }
+
+          .report-container {
+            width: 595px;
+            height: 842px;
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+            background-color: white !important;
+            overflow: hidden;
+          }
+
+          .report-page,
+          .report-content {
+            width: 575px;
+            height: 820px;
+            margin: auto;
+            background-color: white !important;
+          }
+
+          .header-section,
+          .product-section,
+          .table-section,
+          .notes-section,
+          .signatures-section {
+            background-color: #f4efef !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            break-inside: avoid;
+          }
+
+          img {
+            display: block !important;
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          table {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          .equipment-table,
+          .results-table {
+            border-collapse: collapse !important;
+          }
+
+          .table-row {
+            border: none !important;
+          }
+
+          .table-row:first-child .table-cell {
+            border: 0.2px solid rgb(4, 4, 4) !important;
+          }
+
+          .table-cell {
+            background-color: rgba(255, 255, 255, 0.002) !important;
+            border: 0.2px solid rgb(4, 4, 4) !important;
+          }
+
+          .table-cell:first-child {
+            border: 0.2px solid rgb(4, 4, 4) !important;
+          }
+
+          .header-cell {
+            background-color: rgba(31, 31, 31, 0.1) !important;
+            font-weight: 500;
+          }
+
+          .table {
+            border: none !important;
+          }
+
+          .report-content {
+            position: relative;
+            page-break-after: always;
+          }
+
+          @page {
+            margin-bottom: 40px;
+          }
+
+          .report-container {
+            page-break-after: always;
+          }
+        }
+
+        .reports-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1rem;
+          gap: 2rem;
+          max-width: 100%;
+          overflow-x: hidden;
+          margin-top: 0;
+        }
+
+        [contenteditable="true"] {
+          box-shadow: 0 0 0 1px #007bff;
+          border-radius: 2px;
+          min-height: 1em;
+          display: inline-block;
+        }
+        
+        .table-cell[contenteditable="true"] {
+          display: table-cell;
+          box-shadow: inset 0 0 0 1px #007bff;
+        }
+        
+        .company-details[contenteditable="true"] {
+          margin-top: 7px;
+          padding-top: 2px;
+          padding-bottom: 2px;
+          font-size: 11px;
+          line-height: 1.2;
+          max-width: 65%;
+        }
+        
+        .test-title[contenteditable="true"] {
+          position: relative;
+          top: 0px;
+          margin-bottom: 10px;
+          display: block;
+        }
+        
+        .reference-info[contenteditable="true"] {
+          display: block;
+          position: relative;
+          line-height: 1.1;
+          padding: 2px 0;
+          height: 65px;
+        }
+      `;
+
+      // Add table-specific styles
+      const tableStyles = `
+        .table {
+          width: 100%;
+          border: none;
+          border-collapse: collapse;
+          text-align: center;
+          align-items: center;
+        }
+
+        .equipment-table .table-row {
+          display: grid;
+          grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr;
+        }
+
+        .results-table .table-row {
+          display: grid;
+          grid-template-columns: 40px 1.2fr 0.8fr 2fr;
+        }
+
+        .table-row {
+          border-bottom: 0.2px solid rgb(4, 4, 4);
+        }
+
+        .table-row:first-child {
+          border-top: 0.2px solid rgb(4, 4, 4);
+        }
+
+        .table-cell {
+          border-right: 0.2px solid rgb(4, 4, 4);
+          padding: 1px 4px;
+          font-size: 9px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          min-height: 15px;
+          height: auto;
+          display: flex;
+          align-items: center;
+          white-space: normal;
+          overflow: visible;
+          line-height: 1.2;
+        }
+
+        .table-cell:first-child {
+          border-left: 0.2px solid rgb(4, 4, 4);
+        }
+
+        .header-cell {
+          background-color: rgba(31, 31, 31, 0.08);
+          font-weight: 500;
+          text-align: center;
+          font-size: 10px;
+          min-height: 10px;
+        }
+
+        .results-table .table-cell:nth-child(4) {
+          white-space: normal;
+          text-align: left;
+          line-height: 1.2;
+          padding: 2px 4px;
+        }
+
+        .results-table .table-cell:nth-child(3),
+        .results-table .table-cell:first-child {
+          justify-content: center;
+        }
+
+        @media print {
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .table-row {
+            border: none !important;
+          }
+
+          .table-row:first-child .table-cell {
+            border: 0.2px solid rgb(4, 4, 4) !important;
+          }
+
+          .table-cell {
+            background-color: rgba(255, 255, 255, 0.002) !important;
+            border: 0.2px solid rgb(4, 4, 4) !important;
+          }
+
+          .table-cell:first-child {
+            border: 0.2px solid rgb(4, 4, 4) !important;
+          }
+
+          .header-cell {
+            background-color: rgba(31, 31, 31, 0.1) !important;
+            font-weight: 500;
+          }
+
+          .table {
+            border: none !important;
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          .equipment-table,
+          .results-table {
+            border-collapse: collapse !important;
+          }
+        }
+      `;
+
       // Create a complete HTML document
       const completeHtml = `
         <!DOCTYPE html>
@@ -824,10 +1655,16 @@ export default function AddResults() {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Test Report - ${test?.atlId}</title>
-            <link rel="stylesheet" href="/src/pages/results/ReportGenerate/ReportDesign.css">
+            <style>
+              ${css}
+              ${additionalStyles}
+              ${tableStyles}
+            </style>
           </head>
-          <body>
-            ${dynamicHtml}
+          <body style="margin: 0; padding: 0; background-color: white;">
+            <div class="reports-wrapper">
+              ${dynamicHtml}
+            </div>
           </body>
         </html>
       `;
