@@ -775,11 +775,11 @@ export default function AddResults() {
         const isChemical = test.testType?.toLowerCase() === 'chemical';
         return {
           image: isChemical 
-            ? "https://res.cloudinary.com/dzus0pcxr/image/upload/v1747115216/jaymit_sir_sign_vyzyyo.png"
-            : "https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true",
-          name: isChemical ? "Jaymit Mali" : "Nisha Kamble",
-          position: isChemical ? "Mechanical Department Head" : "Quality Manager",
-          designation: isChemical ? "Authorised Signatory-Mechanical" : "Authorised Signatory-Chemical"
+            ? "https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true"
+            : "https://res.cloudinary.com/dzus0pcxr/image/upload/v1747115216/jaymit_sir_sign_vyzyyo.png",
+          name: isChemical ? "Nisha Kamble" : "Jaymit Mali",
+          position: isChemical ? "Quality Manager" : "Technical Manager",
+          designation: isChemical ? "Chemical Signatory" : "Mechanical Signatory"
         };
       };
 
@@ -1219,6 +1219,7 @@ export default function AddResults() {
           min-height: 70px;
           height: auto;
         }
+          
 
         .signatures-left {
           align-self: stretch;
@@ -1983,7 +1984,7 @@ export default function AddResults() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="fromDate" className="flex items-center gap-2">
+                  <Label htmlFor="fromDate" className="flex gap-2 items-center">
                     <Calendar className="w-4 h-4" /> From Date
                   </Label>
                   <Input
@@ -1995,7 +1996,7 @@ export default function AddResults() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="toDate" className="flex items-center gap-2">
+                  <Label htmlFor="toDate" className="flex gap-2 items-center">
                     <Calendar className="w-4 h-4" /> To Date
                   </Label>
                   <Input

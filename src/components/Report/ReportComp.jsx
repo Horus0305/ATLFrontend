@@ -18,7 +18,7 @@ import { API_URLS, apiRequest } from "@/config/api";
 import { useParams } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const ReportComp = ({ test, onSave, testId: propTestId }) => {
+function ReportComp({ test, onSave, testId: propTestId }) {
   const [isEditingEnabled, setIsEditingEnabled] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [reportHtml, setReportHtml] = useState("");
@@ -224,11 +224,11 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
                 const isChemical = test.testType?.toLowerCase() === 'chemical';
                 return {
                   image: isChemical 
-                    ? "https://res.cloudinary.com/dzus0pcxr/image/upload/v1747115216/jaymit_sir_sign_vyzyyo.png"
-                    : "https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true",
-                  name: isChemical ? "Jaymit Mali" : "Nisha Kamble",
-                  position: isChemical ? "Mechanical Department Head" : "Quality Manager",
-                  designation: isChemical ? "Authorised Signatory-Mechanical" : "Authorised Signatory-Chemical"
+                    ? "https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true"
+                    : "https://res.cloudinary.com/dzus0pcxr/image/upload/v1747115216/jaymit_sir_sign_vyzyyo.png",
+                  name: isChemical ? "Nisha Kamble" : "Jaymit Mali",
+                  position: isChemical ? "Quality Manager" : "Technical Manager",
+                  designation: isChemical ? "Chemical Signatory" : "Mechanical Signatory"
                 };
               };
 
@@ -301,33 +301,67 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
 
   useEffect(() => {
     let currentPage = 1;
-    let lastScrollTop = 0;
-    let scrollDirection = "none";
     let isLocked = false;
-    const THRESHOLD = 820;
-    const NOTES_THRESHOLD = 800;
     const LOCK_DURATION = 1000;
+
+    // Function to check if section overlaps with footer or exceeds content area
+    function checkSectionOverflow(section) {
+      if (!section) return true;
+
+      const reportContent = document.querySelector(".report-content");
+      const footer = document.querySelector(".footer-logo");
+      if (!reportContent || !footer) return true;
+
+      const sectionRect = section.getBoundingClientRect();
+      const footerRect = footer.getBoundingClientRect();
+      const contentRect = reportContent.getBoundingClientRect();
+
+      // Check if section bottom overlaps with footer or exceeds content height
+      const sectionBottom = sectionRect.bottom;
+      const footerTop = footerRect.top;
+      const contentBottom = contentRect.bottom - 20; // 20px buffer
+
+      return sectionBottom >= footerTop || sectionBottom >= contentBottom;
+    }
 
     // Function to check if there's enough space for a section
     function hasEnoughSpace(sectionClass) {
       const section = document.querySelector(sectionClass);
-      const reportPage = document.querySelector(".report-page");
-      if (!section || !reportPage) return false;
+      if (!section) return false;
 
-      const sectionRect = section.getBoundingClientRect();
-      const pageRect = reportPage.getBoundingClientRect();
+      // Check if any previous sibling sections overflow
+      let currentSection = section.previousElementSibling;
+      while (currentSection) {
+        if (checkSectionOverflow(currentSection)) {
+          return false;
+        }
+        currentSection = currentSection.previousElementSibling;
+      }
 
-      const spaceNeeded = sectionRect.height;
-      const currentPosition = sectionRect.top;
-      const availableSpace = pageRect.height - currentPosition;
-
-      return availableSpace >= spaceNeeded;
+      // Check if this section would overflow
+      return !checkSectionOverflow(section);
     }
 
-    // Function to check if notes are on page 2
-    function areNotesOnPageTwo() {
+    // Function to check content changes and adjust layout
+    function checkContentChanges() {
+      if (isLocked) return;
+      isLocked = true;
+
       const notes1 = document.querySelector(".notes-section");
-      return notes1 && notes1.style.display === "none";
+      const signatures1 = document.querySelector(".signatures-section");
+
+      // First check notes section
+      if (notes1 && checkSectionOverflow(notes1)) {
+        forcePageTwo(".notes-section", ".notes-section-2");
+        forcePageTwo(".signatures-section", ".signatures-section-2");
+      } else if (signatures1 && checkSectionOverflow(signatures1)) {
+        // If notes fit but signatures don't, move only signatures
+        forcePageTwo(".signatures-section", ".signatures-section-2");
+      }
+
+      setTimeout(() => {
+        isLocked = false;
+      }, LOCK_DURATION);
     }
 
     // Function to force page 2 display for a section
@@ -337,10 +371,48 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
 
       if (!section1 || !section2) return;
 
-      section1.style.display = "none";
-      section2.style.display = section1Class === ".signatures-section" ? "flex" : "block";
-      section2.style.opacity = "1";
+      // Synchronize content between notes sections before moving to page 2
+      if (section1Class === ".notes-section") {
+        section2.innerHTML = section1.innerHTML;
+      }
+
+      section1.style.transition = "opacity 0.3s ease-out";
+      section2.style.transition = "opacity 0.3s ease-out";
+
+      section1.style.opacity = "0";
+      setTimeout(() => {
+        section1.style.display = "none";
+        section2.style.display = section1Class === ".signatures-section" ? "flex" : "block";
+        section2.style.opacity = "1";
+        checkSecondPageVisibility();
+      }, 300);
+      
       currentPage = 2;
+    }
+
+    // Function to check if notes are on page 2
+    function areNotesOnPageTwo() {
+      const notes1 = document.querySelector(".notes-section");
+      const notes2 = document.querySelector(".notes-section-2");
+      return notes1 && notes2 && notes1.style.display === "none" && notes2.style.display !== "none";
+    }
+
+    // Function to check if second page is needed
+    function checkSecondPageVisibility() {
+      const notes2 = document.querySelector(".notes-section-2");
+      const signatures2 = document.querySelector(".signatures-section-2");
+      const secondPage = document.querySelectorAll(".report-container")[1];
+
+      if (!secondPage) return;
+
+      const isNotes2Visible = notes2 && notes2.style.display !== "none";
+      const isSignatures2Visible = signatures2 && signatures2.style.display !== "none";
+
+      if (!isNotes2Visible && !isSignatures2Visible) {
+        secondPage.style.display = "none";
+      } else {
+        secondPage.style.display = "flex";
+      }
     }
 
     // Initialize page state
@@ -352,207 +424,99 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
 
       if (!signatures1 || !signatures2 || !notes1 || !notes2) return;
 
+      // Add smooth transitions
       signatures1.style.transition = "opacity 0.3s ease-out";
       signatures2.style.transition = "opacity 0.3s ease-out";
       notes1.style.transition = "opacity 0.3s ease-out";
       notes2.style.transition = "opacity 0.3s ease-out";
 
-      if (!hasEnoughSpace(".notes-section") || window.scrollY > NOTES_THRESHOLD) {
-        forcePageTwo(".notes-section", ".notes-section-2");
-        forcePageTwo(".signatures-section", ".signatures-section-2");
-        return;
-      }
+      // Reset opacity and display
+      signatures1.style.opacity = "1";
+      signatures2.style.opacity = "1";
+      notes1.style.opacity = "1";
+      notes2.style.opacity = "1";
 
-      if (!hasEnoughSpace(".signatures-section")) {
-        forcePageTwo(".signatures-section", ".signatures-section-2");
-      }
+      // Initially show everything on page 1
+      notes1.style.display = "block";
+      notes2.style.display = "none";
+      signatures1.style.display = "flex";
+      signatures2.style.display = "none";
 
-      if (window.scrollY <= NOTES_THRESHOLD && hasEnoughSpace(".notes-section")) {
-        notes1.style.display = "block";
-        notes2.style.display = "none";
-        notes1.style.opacity = "1";
-
-        if (window.scrollY <= THRESHOLD && hasEnoughSpace(".signatures-section")) {
-          signatures1.style.display = "flex";
-          signatures2.style.display = "none";
-          signatures1.style.opacity = "1";
-        } else {
-          forcePageTwo(".signatures-section", ".signatures-section-2");
-        }
-      } else {
-        forcePageTwo(".notes-section", ".notes-section-2");
-        forcePageTwo(".signatures-section", ".signatures-section-2");
-      }
+      // Check for overflow and adjust layout
+      checkContentChanges();
     }
 
-    // Function to switch pages for a section
-    function switchPage(toPage, section1Class, section2Class) {
-      if (isLocked) return;
+    // Add MutationObserver to sync notes content between pages
+    function setupNotesSync() {
+      const notes1 = document.querySelector(".notes-section");
+      const notes2 = document.querySelector(".notes-section-2");
+      
+      if (!notes1 || !notes2) return;
 
-      const section1 = document.querySelector(section1Class);
-      const section2 = document.querySelector(section2Class);
+      // Create MutationObserver to watch for content changes in notes section 1
+      const notesObserver = new MutationObserver((mutations) => {
+        // Sync content to notes section 2
+        notes2.innerHTML = notes1.innerHTML;
+      });
 
-      if (!section1 || !section2) return;
+      // Observe the first notes section for changes
+      notesObserver.observe(notes1, { 
+        childList: true, 
+        subtree: true, 
+        characterData: true,
+        attributes: false 
+      });
 
-      if (toPage === 2 && section1Class === ".notes-section") {
-        forcePageTwo(".signatures-section", ".signatures-section-2");
-      }
-
-      if (toPage === 1 && section1Class === ".signatures-section" && areNotesOnPageTwo()) {
-        return;
-      }
-
-      if (toPage === 1) {
-        if (!hasEnoughSpace(section1Class)) {
-          forcePageTwo(section1Class, section2Class);
-          return;
-        }
-      }
-
-      isLocked = true;
-
-      if (toPage === 1) {
-        section1.style.display = section1Class === ".signatures-section" ? "flex" : "block";
-        section1.style.opacity = "0";
-        requestAnimationFrame(() => {
-          section1.style.opacity = "1";
-          section2.style.opacity = "0";
-          setTimeout(() => {
-            section2.style.display = "none";
-          }, 300);
-        });
-      } else {
-        section2.style.display = section1Class === ".signatures-section" ? "flex" : "block";
-        section2.style.opacity = "0";
-        requestAnimationFrame(() => {
-          section2.style.opacity = "1";
-          section1.style.opacity = "0";
-          setTimeout(() => {
-            section1.style.display = "none";
-          }, 300);
-        });
-      }
-
-      setTimeout(() => {
-        isLocked = false;
-      }, LOCK_DURATION);
-    }
-
-    // Function to handle scroll events
-    function handleScroll() {
-      if (isLocked) return;
-
-      const currentScrollTop = window.scrollY;
-      const signatures = document.querySelector(".signatures-section");
-      const notes = document.querySelector(".notes-section");
-
-      if (!signatures || !notes) return;
-
-      scrollDirection = currentScrollTop > lastScrollTop ? "down" : "up";
-
-      const signaturesRect = signatures.getBoundingClientRect();
-      const notesRect = notes.getBoundingClientRect();
-      const signaturesBottom = Math.round(signaturesRect.bottom + window.scrollY);
-      const notesBottom = Math.round(notesRect.bottom + window.scrollY);
-
-      if (!hasEnoughSpace(".notes-section")) {
-        forcePageTwo(".notes-section", ".notes-section-2");
-        forcePageTwo(".signatures-section", ".signatures-section-2");
-      } else if (scrollDirection === "down" && notesBottom > NOTES_THRESHOLD) {
-        switchPage(2, ".notes-section", ".notes-section-2");
-        forcePageTwo(".signatures-section", ".signatures-section-2");
-      } else if (scrollDirection === "up" && notesBottom <= NOTES_THRESHOLD) {
-        if (hasEnoughSpace(".notes-section")) {
-          switchPage(1, ".notes-section", ".notes-section-2");
-          if (hasEnoughSpace(".signatures-section") && signaturesBottom <= THRESHOLD) {
-            switchPage(1, ".signatures-section", ".signatures-section-2");
-          }
-        } else {
-          forcePageTwo(".notes-section", ".notes-section-2");
-          forcePageTwo(".signatures-section", ".signatures-section-2");
-        }
-      }
-
-      if (!areNotesOnPageTwo()) {
-        if (!hasEnoughSpace(".signatures-section")) {
-          forcePageTwo(".signatures-section", ".signatures-section-2");
-        } else if (scrollDirection === "down" && signaturesBottom > THRESHOLD) {
-          switchPage(2, ".signatures-section", ".signatures-section-2");
-        } else if (scrollDirection === "up" && signaturesBottom <= THRESHOLD) {
-          if (hasEnoughSpace(".signatures-section")) {
-            switchPage(1, ".signatures-section", ".signatures-section-2");
-          } else {
-            forcePageTwo(".signatures-section", ".signatures-section-2");
-          }
-        }
-      }
-
-      lastScrollTop = currentScrollTop;
-    }
-
-    // Throttle function
-    function throttle(func, limit) {
-      let inThrottle;
-      return function (...args) {
-        if (!inThrottle) {
-          func.apply(this, args);
-          inThrottle = true;
-          requestAnimationFrame(() => {
-            inThrottle = false;
-          });
-        }
-      };
+      return notesObserver;
     }
 
     // Setup event listeners
     function setupEventListeners() {
-      const throttledScrollHandler = throttle(handleScroll, 16);
-      window.addEventListener("scroll", throttledScrollHandler, { passive: true });
+      // Create MutationObserver to watch for content changes
+      const contentObserver = new MutationObserver(() => {
+        checkContentChanges();
+      });
 
-      const handleResize = throttle(() => {
+      // Setup notes sync observer
+      const notesObserver = setupNotesSync();
+
+      // Observe both notes and signatures sections
+      const notes = document.querySelector(".notes-section");
+      const signatures = document.querySelector(".signatures-section");
+
+      if (notes) {
+        contentObserver.observe(notes, { 
+          childList: true, 
+          subtree: true, 
+          characterData: true,
+          attributes: true 
+        });
+      }
+
+      if (signatures) {
+        contentObserver.observe(signatures, { 
+          childList: true, 
+          subtree: true, 
+          characterData: true,
+          attributes: true 
+        });
+      }
+
+      // Handle window resize
+      const handleResize = () => {
         if (!isLocked) {
-          if (!hasEnoughSpace(".notes-section")) {
-            forcePageTwo(".notes-section", ".notes-section-2");
-            forcePageTwo(".signatures-section", ".signatures-section-2");
-            return;
-          }
-
-          const notes = document.querySelector(".notes-section");
-          if (notes) {
-            const notesRect = notes.getBoundingClientRect();
-            const notesBottom = Math.round(notesRect.bottom + window.scrollY);
-
-            if (notesBottom <= NOTES_THRESHOLD && hasEnoughSpace(".notes-section")) {
-              switchPage(1, ".notes-section", ".notes-section-2");
-              const signatures = document.querySelector(".signatures-section");
-              if (signatures) {
-                const sigRect = signatures.getBoundingClientRect();
-                const sigBottom = Math.round(sigRect.bottom + window.scrollY);
-
-                if (sigBottom <= THRESHOLD && hasEnoughSpace(".signatures-section")) {
-                  switchPage(1, ".signatures-section", ".signatures-section-2");
-                } else {
-                  switchPage(2, ".signatures-section", ".signatures-section-2");
-                }
-              }
-            } else {
-              switchPage(2, ".notes-section", ".notes-section-2");
-              switchPage(2, ".signatures-section", ".signatures-section-2");
-            }
-          }
+          initializePageState();
         }
-      }, 100);
+      };
 
       window.addEventListener("resize", handleResize, { passive: true });
+      window.addEventListener("load", initializePageState, { passive: true });
 
-      window.addEventListener("load", () => {
-        setTimeout(initializePageState, 100);
-      }, { passive: true });
-
-      // Cleanup function
       return () => {
-        window.removeEventListener("scroll", throttledScrollHandler);
+        contentObserver.disconnect();
+        if (notesObserver) notesObserver.disconnect();
         window.removeEventListener("resize", handleResize);
+        window.removeEventListener("load", initializePageState);
       };
     }
 
@@ -584,6 +548,12 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         }
       });
     });
+
+    // Make notes-section-2 also editable
+    const notes2 = document.querySelector(".notes-section-2");
+    if (notes2 && !notes2.querySelector("img")) {
+      notes2.contentEditable = "true";
+    }
 
     // Check NABL logo visibility when enabling editing
     checkNablLogoVisibility();
@@ -952,7 +922,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
           <div className="mb-1 -ml-3">
             {console.log("Report data:", test)}
             <h1 className="text-lg font-semibold">Edit Report</h1>
-            <div className="flex items-center gap-3">
+            <div className="flex gap-3 items-center">
               <p className="text-sm text-muted-foreground">
                 ATL ID: {test?.atlId} | Material: {test?.material}
               </p>
@@ -1208,8 +1178,9 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         }
 
         .report-number {
-          font-size: 11px;
+          font-size: 10px;
           font-weight: normal;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
           line-height: 1.2;
           flex: 1;
           max-width: 30%;
@@ -1220,7 +1191,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
           text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
           font-size: 12px;
           text-align: center;
-          font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
           font-weight: 800;
           line-height: 1;
           position: absolute;
@@ -1231,23 +1202,30 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         }
 
         .date {
-          font-size: 11px;
+          font-size: 10px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 400;
           text-align: right;
           flex: 1;
         }
 
         .order-details {
-          font-size: 11px;
+          font-size: 10px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 400;
           line-height: 1.4;
           margin-top: 3px;
           max-width: 65%;
         }
 
         .company-details {
-          font-size: 11px;
+          font-size: 10px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 400;
           line-height: 1.2;
           margin-top: 2px;
           max-width: 65%;
+          
         }
 
         .date-section {
@@ -1255,9 +1233,11 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
           top: 12px;
           right: 10px;
           text-align: right;
-          font-size: 11px;
+          font-size: 10px;
           line-height: 1.4;
           margin-top: -1px;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
+          font-weight: 400;
         }
 
         .receipt-date {
@@ -1310,11 +1290,11 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         .test-title {
           text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.25);
           font-size: 11px;
-          font-family: Geologica, -apple-system, Roboto, Helvetica, sans-serif;
+          font-family: Gulzar, -apple-system, Roboto, Helvetica, sans-serif;
           font-weight: 700;
           line-height: 1;
           text-align: center;
-          margin-left: -30px;
+          margin-left: -50px;
           margin-top: -2px;
           transform: translateX(-10%);
           position: relative;
@@ -1381,7 +1361,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
           height: auto;
           width:auto;
           display: flex;
-          min-height: 245px;
+          min-height: 200px;
           margin: 5px 10px 5px 10px;
           padding: 12px 10px;
           flex-direction: column;
@@ -1526,10 +1506,10 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         }
 
         .signatures-section {
-          display: flex;
+          
           border-radius: 5px;
           background-color: rgba(244, 239, 239, 1);
-          display: flex;
+          
           margin: 5px 10px 0px 10px;
           padding: 5px 10px 15px;
           align-items: flex-start;
@@ -1546,7 +1526,7 @@ const ReportComp = ({ test, onSave, testId: propTestId }) => {
         }
 
         .signatures-section-2 {
-          display: none;
+          
           border-radius: 5px;
           background-color: rgba(244, 239, 239, 1);
           margin: 5px 10px 0px 10px;
