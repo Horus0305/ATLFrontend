@@ -2031,20 +2031,20 @@ export function TestDetailsView({ test: initialTest, onBack }) {
                         className="flex justify-between items-center p-6 rounded-lg border shadow-md"
                       >
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
+                          <div className="flex gap-3 items-center mb-2">
                             <h4 className="font-semibold">{test.material}</h4>
                             {test.testReportApproval === 1 && (
-                              <span className="px-2 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">
+                              <span className="px-2 py-1 text-sm text-yellow-800 bg-yellow-100 rounded-full">
                                 Sent for Approval
                               </span>
                             )}
                             {test.testReportApproval === 2 && (
-                              <span className="px-2 py-1 text-sm rounded-full bg-green-100 text-green-800">
+                              <span className="px-2 py-1 text-sm text-green-800 bg-green-100 rounded-full">
                                 Approved
                               </span>
                             )}
                             {test.testReportApproval === -1 && (
-                              <span className="px-2 py-1 text-sm rounded-full bg-red-100 text-red-800">
+                              <span className="px-2 py-1 text-sm text-red-800 bg-red-100 rounded-full">
                                 Rejected
                               </span>
                             )}
@@ -2079,7 +2079,7 @@ export function TestDetailsView({ test: initialTest, onBack }) {
                               variant="outline"
                               size="sm"
                               onClick={() => handleOpenReportEmailDialog(test)}
-                              className="flex gap-1 items-center"
+                              className="flex gap-1 items-center mt-2 h-9"
                             >
                               <Mail className="w-4 h-4" />
                               Send Report Email

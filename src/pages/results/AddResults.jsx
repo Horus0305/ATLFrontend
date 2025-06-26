@@ -772,7 +772,7 @@ export default function AddResults() {
 
       // Get signature details based on test type
       const getSignatureDetails = () => {
-        const isChemical = test.testType?.toLowerCase() === 'chemical';
+        const isChemical = test.testType?.toLowerCase().includes('chemical');
         return {
           image: isChemical 
             ? "https://cdn.builder.io/api/v1/image/assets/TEMP/61e0073eec73441338ae842f0b8ebf39c3ea9529?placeholderIfAbsent=true"
