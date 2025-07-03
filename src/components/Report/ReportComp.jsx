@@ -811,9 +811,38 @@ function ReportComp({ test, onSave, testId: propTestId }) {
       if (response.ok) {
         toast({
           title: "Success",
-          description: "Report approved successfully",
+          description: response.message || "Report approved successfully",
         });
-        window.history.back();
+        
+        // If PDF URL is returned, show a success message with the link
+        if (response.pdfUrl) {
+          console.log("PDF URL received:", response.pdfUrl);
+          
+          // Create a toast with the PDF link
+          toast({
+            title: "PDF Generated",
+            description: (
+              <div>
+                Report PDF generated successfully.
+                <br />
+                <a 
+                  href={response.pdfUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="underline text-blue-600"
+                >
+                  View PDF
+                </a>
+              </div>
+            ),
+            duration: 8000,
+          });
+        }
+        
+        // Delay navigation to allow time to see the toast
+        setTimeout(() => {
+          window.history.back();
+        }, 1000);
       }
     } catch (error) {
       console.error("Error approving report:", error);

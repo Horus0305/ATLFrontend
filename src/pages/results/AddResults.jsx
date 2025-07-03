@@ -127,11 +127,11 @@ export default function AddResults() {
   };
 
   // Add an effect to periodically check for status updates
-  useEffect(() => {
-    if (test) {
-      checkExistingTables();
-    }
-  }, [test]);
+  // useEffect(() => {
+  //   if (test) {
+  //     checkExistingTables();
+  //   }
+  // }, [test]);
 
   const fetchTestStandards = async () => {
     try {
@@ -162,59 +162,33 @@ export default function AddResults() {
         console.error("No test object available");
         return;
       }
-      console.log("Fetching client data...");
-      const response = await apiRequest(API_URLS.getAllClients);
-      console.log("Clients API response:", response);
-      if (response.ok && response.clients) {
-        // Find the client with matching name (case-insensitive and trimmed)
-        const client = response.clients.find((c) => {
-          const clientNameFromDB = (c.clientname || "").toLowerCase().trim();
-          const testClientName = (test.clientName || "").toLowerCase().trim();
-          console.log("Comparing:", clientNameFromDB, "with:", testClientName);
-          return clientNameFromDB === testClientName;
-        });
 
-        if (client) {
-          console.log("Found client data:", client);
-          setClientData(client);
-        } else {
-          // Try to find by partial match if exact match fails
-          const partialMatch = response.clients.find((c) => {
-            const clientNameFromDB = (c.clientname || "").toLowerCase().trim();
-            const testClientName = (test.clientName || "").toLowerCase().trim();
-            return (
-              clientNameFromDB.includes(testClientName) ||
-              testClientName.includes(clientNameFromDB)
-            );
-          });
+      // Extract the test ID from the URL
+      const urlParts = window.location.pathname.split("/");
+      const testId = urlParts[urlParts.length - 2];
 
-          if (partialMatch) {
-            console.log("Found client by partial match:", partialMatch);
-            setClientData(partialMatch);
-          } else {
-            console.error("Client not found in database, using test data");
-            // If client not found in database, use the data from test object
-            setClientData({
-              clientname: test.clientName,
-              address: test.address,
-            });
-          }
-        }
-      } else {
-        console.error("Failed to fetch clients data:", response);
-        // Fallback to test object data if API fails
+      if (!testId) {
+        console.error("Test ID not found in URL");
+        return;
+      }
+
+      console.log("Fetching test data...");
+      const response = await apiRequest(`${API_URLS.TESTS}/${testId}`);
+      console.log("Test API response:", response);
+
+      if (response.ok && response.test) {
+        // Set client data from the complete test document
         setClientData({
-          clientname: test.clientName,
-          address: test.address,
+          clientname: response.test.clientName,
+          address: response.test.address,
+          contactno: response.test.contactNo,
+          emailId: response.test.emailId
         });
+      } else {
+        console.error("Failed to fetch test data:", response);
       }
     } catch (error) {
-      console.error("Error fetching client data:", error);
-      // Fallback to test object data if API fails
-      setClientData({
-        clientname: test.clientName,
-        address: test.address,
-      });
+      console.error("Error fetching test data:", error);
     }
   };
 
@@ -744,7 +718,7 @@ export default function AddResults() {
       dynamicHtml = dynamicHtml.replace(
         /<div class="lab-reference">.*?<\/div>/s,
         `<div class="lab-reference">
-          Lab Reference No. ${test?.testId || 'N/A'}<br>
+          Lab Reference No. ${test?.atlId || 'N/A'}<br>
           Test Period: ${testPeriodFrom} to ${testPeriodTo}<br><br>
         </div>`
       );

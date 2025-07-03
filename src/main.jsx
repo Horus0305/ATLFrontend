@@ -1,11 +1,11 @@
-import { StrictMode, lazy, Suspense } from 'react'
+import { StrictMode, lazy, Suspense, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { store } from './store/index.js'
 import './index.css'
 import App from './App'
 import Login from './pages/Login.jsx'
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { BrowserRouter } from 'react-router-dom'
 import { ErrorBoundary } from './components/error-boundary'
 import NotFound from './pages/NotFound'
@@ -39,6 +39,29 @@ const LoadingSpinner = () => (
   </div>
 );
 
+// PDF Redirect Component
+const PDFRedirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Get the current path
+    const path = location.pathname;
+    
+    // Check if it's a PDF request
+    if (path.startsWith('/api/reports/') && path.endsWith('.pdf')) {
+      // Redirect to the backend server
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      window.location.href = `${backendUrl}${path}`;
+    } else {
+      // Not a PDF request, show 404
+      navigate('/not-found', { replace: true });
+    }
+  }, [location, navigate]);
+  
+  return <LoadingSpinner />;
+};
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
@@ -49,6 +72,9 @@ createRoot(document.getElementById('root')).render(
               <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
                   <Route path="/" element={<Login />} />
+
+                  {/* PDF Route */}
+                  <Route path="/api/reports/:year/:month/:filename" element={<PDFRedirect />} />
 
                   {/* SuperAdmin routes */}
                   <Route path="/superadmin" element={
