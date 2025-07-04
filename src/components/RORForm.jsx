@@ -27,6 +27,7 @@ export default function RORForm({ testData, onSuccess }) {
     projectName: "",
     siteAddress: "",
     billingAddress: "",
+    rorNo: "",
     testRemarks:
       testData.tests?.map((test) => ({
         ...test,
@@ -93,6 +94,7 @@ export default function RORForm({ testData, onSuccess }) {
           },
           body: JSON.stringify({
             ...formData,
+            rorNo: formData.rorNo,
             completionDate: formattedCompletionDate,
           }),
         }
@@ -114,6 +116,17 @@ export default function RORForm({ testData, onSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="rorNo">ROR Number</Label>
+          <Input
+            id="rorNo"
+            name="rorNo"
+            value={formData.rorNo}
+            onChange={handleChange}
+            required
+            placeholder="Enter ROR Number"
+          />
+        </div>
         <div className="space-y-2">
           <Label htmlFor="customerName">Customer Name</Label>
           <Input

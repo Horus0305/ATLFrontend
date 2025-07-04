@@ -27,7 +27,8 @@ export function ProformaForm({ testData, onSuccess }) {
     buyerorderno: "",
     otherreferences: "",
     supplierref: "",
-    deliverynote: ""
+    deliverynote: "",
+    proformaNo: ""
   });
   const [tableData, setTableData] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -103,6 +104,7 @@ export function ProformaForm({ testData, onSuccess }) {
       const payload = {
         testId: testData.testId,
         materialTestId: testData._id,
+        proformaNo: formData.proformaNo,
         gstin: formData.gstin,
         pan: formData.pan,
         hsn: formData.hsn,
@@ -173,6 +175,16 @@ export function ProformaForm({ testData, onSuccess }) {
   return (
     <div className="space-y-6 p-4">
       <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Proforma Number</Label>
+          <Input 
+            name="proformaNo"
+            value={formData.proformaNo}
+            onChange={handleInputChange}
+            placeholder="Enter Proforma Number"
+            required
+          />
+        </div>
         <div>
           <Label>GSTIN/UIN</Label>
           <Input 

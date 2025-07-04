@@ -31,6 +31,7 @@ const SectionNotFound = lazy(() => import("./components/section-not-found"));
 const Equipments = lazy(() => import("./pages/sectionhead/Equipments"));
 const AddResults = lazy(() => import("./pages/results/AddResults"));
 const EditReport = lazy(() => import("./pages/results/EditReport"));
+const ReportViewer = lazy(() => import("./pages/results/ReportViewer"));
 
 // Loading spinner component
 const LoadingSpinner = () => (
@@ -38,29 +39,6 @@ const LoadingSpinner = () => (
     <div className="spinner"></div>
   </div>
 );
-
-// PDF Redirect Component
-const PDFRedirect = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Get the current path
-    const path = location.pathname;
-    
-    // Check if it's a PDF request
-    if (path.startsWith('/api/reports/') && path.endsWith('.pdf')) {
-      // Redirect to the backend server
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      window.location.href = `${backendUrl}${path}`;
-    } else {
-      // Not a PDF request, show 404
-      navigate('/not-found', { replace: true });
-    }
-  }, [location, navigate]);
-  
-  return <LoadingSpinner />;
-};
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -73,8 +51,8 @@ createRoot(document.getElementById('root')).render(
                 <Routes>
                   <Route path="/" element={<Login />} />
 
-                  {/* PDF Route */}
-                  <Route path="/api/reports/:year/:month/:filename" element={<PDFRedirect />} />
+                  {/* Public route for report viewing */}
+                  <Route path="/report/:reportId" element={<ReportViewer />} />
 
                   {/* SuperAdmin routes */}
                   <Route path="/superadmin" element={
