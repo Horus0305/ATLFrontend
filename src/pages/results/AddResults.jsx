@@ -1275,7 +1275,7 @@ export default function AddResults() {
           object-position: center;
           width: 183px;
           height: 30px;
-          align-self: center;
+          align-self: flex-end;
           margin-top: auto;
           max-width: 100%;
           margin-bottom: 5px;
