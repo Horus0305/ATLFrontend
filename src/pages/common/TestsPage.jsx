@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { AtlIdDialog } from "@/components/AtlIdDialog.jsx";
+import { AtlIdDialog } from "@/components/ATLIdDialog.jsx";
 
 export default function TestsPage() {
     const tableRef = useRef(null);
