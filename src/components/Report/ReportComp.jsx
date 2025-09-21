@@ -228,7 +228,7 @@ function ReportComp({ test, onSave, testId: propTestId }) {
                     : "https://res.cloudinary.com/dzus0pcxr/image/upload/v1747115216/jaymit_sir_sign_vyzyyo.png",
                   name: isChemical ? "Nisha Kamble" : "Jaymit Mali",
                   position: isChemical ? "Quality Manager" : "Technical Manager",
-                  designation: isChemical ? "Chemical Signatory" : "Mechanical Signatory"
+                  designation: isChemical ? "Chemical Signatory" : "Mechanical & NDT Signatory"
                 };
               };
 
@@ -829,7 +829,7 @@ function ReportComp({ test, onSave, testId: propTestId }) {
                   href={response.pdfUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="underline text-blue-600"
+                  className="text-blue-600 underline"
                 >
                   View PDF
                 </a>
@@ -938,20 +938,20 @@ function ReportComp({ test, onSave, testId: propTestId }) {
 
   return (
     <div className="relative min-h-screen bg-white">
-      <div className="flex sticky top-0 z-50 items-center -mt-3 bg-white border-b">
-        <div className="flex gap-4 items-center">
+      <div className="sticky top-0 z-50 flex items-center -mt-3 bg-white border-b">
+        <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => window.history.back()}
-            className="flex gap-2 items-center"
+            className="flex items-center gap-2"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <div className="mb-1 -ml-3">
             {console.log("Report data:", test)}
             <h1 className="text-lg font-semibold">Edit Report</h1>
-            <div className="flex gap-3 items-center">
+            <div className="flex items-center gap-3">
               <p className="text-sm text-muted-foreground">
                 ATL ID: {test?.atlId} | Material: {test?.material}
               </p>
@@ -974,7 +974,7 @@ function ReportComp({ test, onSave, testId: propTestId }) {
               >
                 {isApproving ? (
                   <>
-                    <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Approving...
                   </>
                 ) : (
@@ -988,7 +988,7 @@ function ReportComp({ test, onSave, testId: propTestId }) {
               >
                 {isRejecting ? (
                   <>
-                    <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Rejecting...
                   </>
                 ) : (
@@ -1004,12 +1004,12 @@ function ReportComp({ test, onSave, testId: propTestId }) {
                 <Button onClick={handleSave} disabled={isSaving}>
                   {isSaving ? (
                     <>
-                      <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Saving...
                     </>
                   ) : (
                     <>
-                      <Save className="mr-2 w-4 h-4" />
+                      <Save className="w-4 h-4 mr-2" />
                       Save Changes
                     </>
                   )}
@@ -1026,9 +1026,9 @@ function ReportComp({ test, onSave, testId: propTestId }) {
             </>
           )}
         </div>
-        <div className="flex gap-2 items-center ml-auto">
+        <div className="flex items-center gap-2 ml-auto">
           {isEditingEnabled && (
-            <div className="flex gap-2 items-center mr-2 nabl-checkbox-container">
+            <div className="flex items-center gap-2 mr-2 nabl-checkbox-container">
               <Checkbox
                 id="nabl-visibility"
                 checked={showNablImage}
@@ -1047,7 +1047,7 @@ function ReportComp({ test, onSave, testId: propTestId }) {
             onClick={handlePrint}
             className="download-button"
           >
-            <Download className="mr-2 w-4 h-4" />
+            <Download className="w-4 h-4 mr-2" />
             Download PDF
           </Button>
         </div>
@@ -1085,7 +1085,7 @@ function ReportComp({ test, onSave, testId: propTestId }) {
             >
               {isRejecting ? (
                 <>
-                  <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Rejecting...
                 </>
               ) : (

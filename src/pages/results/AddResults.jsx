@@ -753,7 +753,7 @@ export default function AddResults() {
             : "https://res.cloudinary.com/dzus0pcxr/image/upload/v1747115216/jaymit_sir_sign_vyzyyo.png",
           name: isChemical ? "Nisha Kamble" : "Jaymit Mali",
           position: isChemical ? "Quality Manager" : "Technical Manager",
-          designation: isChemical ? "Chemical Signatory" : "Mechanical Signatory"
+          designation: isChemical ? "Chemical Signatory" : "Mechanical & NDT Signatory"
         };
       };
 
@@ -1659,8 +1659,8 @@ export default function AddResults() {
     if (!existingEquipmentTable) return null;
 
     return (
-      <div className="p-6 w-full bg-white rounded-lg shadow-sm dark:bg-black">
-        <div className="flex justify-between items-center mb-4">
+      <div className="w-full p-6 bg-white rounded-lg shadow-sm dark:bg-black">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Equipment Table</h2>
           <Button
             onClick={() => {
@@ -1680,7 +1680,7 @@ export default function AddResults() {
 
         {/* Display the equipment table without editing capability */}
         <div
-          className="flex overflow-auto justify-center items-center p-4 rounded-md border equipment-table-display"
+          className="flex items-center justify-center p-4 overflow-auto border rounded-md equipment-table-display"
           dangerouslySetInnerHTML={{ __html: existingEquipmentTable }}
         />
       </div>
@@ -1691,8 +1691,8 @@ export default function AddResults() {
     if (!existingResultTable) return null;
 
     return (
-      <div className="p-6 w-full bg-white rounded-lg shadow-sm dark:bg-black">
-        <div className="flex justify-between items-center mb-4">
+      <div className="w-full p-6 bg-white rounded-lg shadow-sm dark:bg-black">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Result Table</h2>
           <Button
             onClick={() => {
@@ -1875,13 +1875,13 @@ export default function AddResults() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center my-8">
+        <div className="flex items-center justify-center my-8">
           <p>Loading...</p>
         </div>
       ) : (
         <div className="flex flex-col items-center space-y-4 max-w-[1200px] mx-auto px-4 pb-8">
-          <div className="p-6 w-full bg-white rounded-lg shadow-sm dark:bg-black">
-            <div className="flex justify-between items-center">
+          <div className="w-full p-6 bg-white rounded-lg shadow-sm dark:bg-black">
+            <div className="flex items-center justify-between">
               <div>
                 <label className="block mb-2">
                   Test ID: {test?.atlId || "N/A"}
@@ -1896,7 +1896,7 @@ export default function AddResults() {
                   Test Type: {test?.testType || "N/A"}
                 </label>
               </div>
-              <div className="flex flex-col gap-2 items-end">
+              <div className="flex flex-col items-end gap-2">
                 <div
                   className={`px-4 py-2 rounded-full text-sm font-medium ${
                     testStatus === "Results Approved"
@@ -1928,13 +1928,13 @@ export default function AddResults() {
 
           {/* Equipment Selection Table - Only show if no existing equipment table */}
           {!existingEquipmentTable && (
-            <div className="p-6 w-full bg-white rounded-lg shadow-sm dark:bg-black">
-              <div className="flex justify-between items-center mb-4">
+            <div className="w-full p-6 bg-white rounded-lg shadow-sm dark:bg-black">
+              <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold">Select Equipment</h2>
                 {selectedEquipment.length > 0 && (
                   <Button
                     onClick={handleSaveEquipment}
-                    className="flex gap-2 items-center"
+                    className="flex items-center gap-2"
                     variant="outline"
                   >
                     Save Equipment Selection
@@ -1958,7 +1958,7 @@ export default function AddResults() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="fromDate" className="flex gap-2 items-center">
+                  <Label htmlFor="fromDate" className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" /> From Date
                   </Label>
                   <Input
@@ -1970,7 +1970,7 @@ export default function AddResults() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="toDate" className="flex gap-2 items-center">
+                  <Label htmlFor="toDate" className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" /> To Date
                   </Label>
                   <Input
@@ -1999,11 +1999,11 @@ export default function AddResults() {
                   Generate Table
                 </Button>
               ) : (
-                <div className="p-6 w-full bg-white rounded-lg shadow-sm dark:bg-black">
-                  <div className="flex gap-4 justify-end mb-4">
+                <div className="w-full p-6 bg-white rounded-lg shadow-sm dark:bg-black">
+                  <div className="flex justify-end gap-4 mb-4">
                     <Button
                       onClick={handleDownload}
-                      className="flex gap-2 items-center"
+                      className="flex items-center gap-2"
                       variant="outline"
                     >
                       <Download className="w-4 h-4" />
@@ -2011,7 +2011,7 @@ export default function AddResults() {
                     </Button>
                     <Button
                       onClick={handleDelete}
-                      className="flex gap-2 items-center"
+                      className="flex items-center gap-2"
                       variant="destructive"
                     >
                       <Trash2 className="w-4 h-4" />
