@@ -27,7 +27,7 @@ export const EquipmentsTable = forwardRef((props, ref) => {
         return;
       }
 
-      const response = await apiRequest(API_URLS.getAllEquipment);
+      const response = await apiRequest(API_URLS.getAllEquipments);
       if (response.ok) {
         setEquipment(response.equipment);
       } else {

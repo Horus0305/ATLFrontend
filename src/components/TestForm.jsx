@@ -35,7 +35,7 @@ import {
 import { Edit, Trash } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { generateIds, formatTestsWithIds } from "@/utils/idGenerator";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Popover,
   PopoverContent,
@@ -89,6 +89,8 @@ const getFilteredParameters = (testScope, materialType, group) => {
 export function TestForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const predefinedAtlId = location.state?.atlId; // Get ATL ID from navigation state
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [testScope, setTestScope] = useState([]);
@@ -480,11 +482,26 @@ export function TestForm() {
     }
 
     try {
-      // Use the new formatTestsWithIds function for final submission
-      const { testId, formattedTests } = await formatTestsWithIds(
-        localMaterialTests,
-        existingTestCount
-      );
+      let testId;
+      let formattedTests;
+
+      if (predefinedAtlId) {
+        // Use the predefined ATL ID
+        testId = predefinedAtlId;
+        formattedTests = localMaterialTests.map((test) => ({
+          ...test,
+          atlId: test.atlId, // Keep existing ATL IDs for materials
+          material: test.materialType
+        }));
+      } else {
+        // Use the existing auto-generation logic
+        const { testId: generatedTestId, formattedTests: generatedTests } = await formatTestsWithIds(
+          localMaterialTests,
+          existingTestCount
+        );
+        testId = generatedTestId;
+        formattedTests = generatedTests;
+      }
 
       const now = new Date();
       const formattedDate = now.toISOString().split("T")[0];
