@@ -178,11 +178,21 @@ const TestScope = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
-    if (!formData.s_no || !formData.material_tested) {
+    // Validation - All fields required with detailed checking
+    const missingFields = [];
+    
+    if (!formData.s_no) missingFields.push("S.No");
+    if (!formData.group || formData.group.trim() === '') missingFields.push("Group");
+    if (!formData.main_group || formData.main_group.trim() === '') missingFields.push("Main Group");
+    if (!formData.sub_group || formData.sub_group.trim() === '') missingFields.push("Sub Group");
+    if (!formData.material_tested || formData.material_tested.trim() === '') missingFields.push("Material Tested");
+    if (!formData.parameters || formData.parameters.trim() === '') missingFields.push("Parameters");
+    if (!formData.test_method || formData.test_method.trim() === '') missingFields.push("Test Method");
+    
+    if (missingFields.length > 0) {
       toast({
         title: "Validation Error",
-        description: "S.No and Material Tested are required fields",
+        description: `Please fill in: ${missingFields.join(", ")}`,
         variant: "destructive",
       });
       return;
@@ -453,7 +463,7 @@ const TestScope = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="group" className="text-right">
-                  Group
+                  Group *
                 </Label>
                 <div className="col-span-3">
                   <ComboboxWithAdd
@@ -468,7 +478,7 @@ const TestScope = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="main_group" className="text-right">
-                  Main Group
+                  Main Group *
                 </Label>
                 <div className="col-span-3">
                   <ComboboxWithAdd
@@ -483,7 +493,7 @@ const TestScope = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="sub_group" className="text-right">
-                  Sub Group
+                  Sub Group *
                 </Label>
                 <div className="col-span-3">
                   <ComboboxWithAdd
@@ -513,7 +523,7 @@ const TestScope = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="parameters" className="text-right">
-                  Parameters
+                  Parameters *
                 </Label>
                 <Input
                   id="parameters"
@@ -521,11 +531,12 @@ const TestScope = () => {
                   value={formData.parameters}
                   onChange={handleInputChange}
                   className="col-span-3"
+                  required
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="test_method" className="text-right">
-                  Test Method
+                  Test Method *
                 </Label>
                 <Input
                   id="test_method"
@@ -533,6 +544,7 @@ const TestScope = () => {
                   value={formData.test_method}
                   onChange={handleInputChange}
                   className="col-span-3"
+                  required
                 />
               </div>
             </div>
