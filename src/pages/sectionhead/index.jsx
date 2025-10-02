@@ -4,7 +4,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { User, TestTubeDiagonal, PieChart, ShieldCheck, Wrench, WrenchIcon } from "lucide-react";
+import { User, TestTubeDiagonal, PieChart, ShieldCheck, Wrench, WrenchIcon, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function SectionHeadPage() {
@@ -38,6 +38,11 @@ export default function SectionHeadPage() {
             name: "Equipments",
             url: "/sectionhead/equipments",
             icon: Wrench,
+          },
+          {
+            name: "Test Scope",
+            url: "/sectionhead/test-scope",
+            icon: FileText,
           },
         ],
     };

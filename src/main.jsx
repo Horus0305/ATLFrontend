@@ -32,6 +32,7 @@ const Equipments = lazy(() => import("./pages/sectionhead/Equipments"));
 const AddResults = lazy(() => import("./pages/results/AddResults"));
 const EditReport = lazy(() => import("./pages/results/EditReport"));
 const ReportViewer = lazy(() => import("./pages/results/ReportViewer"));
+const TestScope = lazy(() => import("./pages/common/TestScope"));
 
 // Loading spinner component
 const LoadingSpinner = () => (
@@ -67,6 +68,7 @@ createRoot(document.getElementById('root')).render(
                       <Route path=":id" element={<TestDetailsPage />} />
                       <Route path=":id/edit-report" element={<EditReport />} />
                     </Route>
+                    <Route path="test-scope" element={<TestScope />} />
                     <Route path="*" element={<SectionNotFound />} />
                   </Route>
 
@@ -112,6 +114,7 @@ createRoot(document.getElementById('root')).render(
                       <Route path=":id/edit-report" element={<EditReport />} />
                     </Route>
                     <Route path="equipments" element={<Equipments />} />
+                    <Route path="test-scope" element={<TestScope />} />
                     <Route path="*" element={<SectionNotFound />} />
                   </Route>
 

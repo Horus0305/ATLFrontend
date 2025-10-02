@@ -5,7 +5,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { User, TestTubeDiagonal, Wrench, PieChart, ShieldCheck, Users } from "lucide-react";
+import { User, TestTubeDiagonal, Wrench, PieChart, ShieldCheck, Users, FileText } from "lucide-react";
 
 
 export default function SuperAdminPage() {
@@ -36,6 +36,11 @@ export default function SuperAdminPage() {
             name: "Users",
             url: "/superadmin/users",
             icon: Users,
+          },
+          {
+            name: "Test Scope",
+            url: "/superadmin/test-scope",
+            icon: FileText,
           },
         ],
     };
